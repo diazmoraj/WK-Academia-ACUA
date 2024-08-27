@@ -17,3 +17,26 @@ class User(db.Model):
             "email": self.email,
             # do not serialize the password, its a security breach
         }
+    
+class Administrator(db.Model):
+    __tablename__ = 'administrator'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    last_name1 = db.Column(db.String(50), nullable=False)
+    last_name2 = db.Column(db.String(50), nullable=True)
+    cardID_type = db.Column(db.String(25), nullable=False)
+    number_cardID = db.Column(db.BigInteger, nullable=False)
+
+    def __repr__(self):
+        return 'Administrator: {}'.format(self.name)
+    
+    def serialize(self):
+        return{
+            "id": self.id,
+            "name": self.name,
+            "last_name1": self.last_name1,
+            "last_name2": self.last_name2,
+            "cardID_type": self.cardID_type,
+            "number_cardID": self.number_cardID
+        }
