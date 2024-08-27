@@ -22,6 +22,8 @@ class Administrator(db.Model):
     password = db.Column(db.String(50), nullable=False)
     is_active = db.Column(db.Boolean(), nullable=False)
 
+    perfil = db.relationship("Perfil", backpopulates="administrator_id_relationship")
+
     def __repr__(self):
         return 'Administrator: {}'.format(self.name)
     
@@ -41,6 +43,23 @@ class Administrator(db.Model):
             "email": self.email
         }
     
+class Perfil(db.Model):
+    __table__ = 'perfil'
+
+    id = db.Column(db.Integer, primary_key=True)
+    perfil = db.Column(db.String(25), nullable=False)
+    administrator_id = db.Column(db.Integer, db.ForeignKey('administrator.id'))
+    administrator_id_relationship = db.relatioship("Administrator", back_populates="perfil")
+
+    def __repr__(self):
+        return 'Perfil: {}'.format(self.perfil)
+    
+    def serialize(self):
+        return{
+            "id": self.id,
+            "perfil": self.perfil
+        }
+    
 class Professor(db.Model):
     __tablename__ = 'professor'
 
@@ -51,6 +70,7 @@ class Professor(db.Model):
     cardID_type = db.Column(db.String(25), nullable=False)
     number_cardID = db.Column(db.BigInteger, nullable=False)
     birthday = db.Column(db.Date, nullable=False)
+    country = db.Column(db.String(50), nullable=False)
     phone_number = db.Column(db.BigInteger, nullable=False)
     province = db.Column(db.String(50), nullable=False)
     canton = db.Column(db.String(50), nullable=False)
@@ -71,6 +91,7 @@ class Professor(db.Model):
             "cardID_type": self.cardID_type,
             "number_cardID": self.number_cardID,
             "birthday": self.birthday,
+            "country": self.country,
             "phone_number": self.phone_number,
             "province": self.province,
             "canton": self.canton,
