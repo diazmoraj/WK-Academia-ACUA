@@ -22,7 +22,7 @@ class Administrator(db.Model):
     password = db.Column(db.String(50), nullable=False)
     is_active = db.Column(db.Boolean(), nullable=False)
 
-    perfil = db.relationship("Perfil", backpopulates="administrator_id_relationship")
+    perfil = db.relationship("Perfil", backpopulates="administrator")
 
     def __repr__(self):
         return 'Administrator: {}'.format(self.name)
@@ -44,12 +44,13 @@ class Administrator(db.Model):
         }
     
 class Perfil(db.Model):
-    __table__ = 'perfil'
+    __tablename__ = 'perfil'
 
     id = db.Column(db.Integer, primary_key=True)
     perfil = db.Column(db.String(25), nullable=False)
+    
     administrator_id = db.Column(db.Integer, db.ForeignKey('administrator.id'))
-    administrator_id_relationship = db.relatioship("Administrator", back_populates="perfil")
+    administrator = db.relationship("Administrator", back_populates="perfil")
 
     def __repr__(self):
         return 'Perfil: {}'.format(self.perfil)
