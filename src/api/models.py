@@ -43,22 +43,22 @@ class Administrator(db.Model):
             "email": self.email
         }
     
-class Perfil(db.Model):
-    __tablename__ = 'perfil'
+class Profile(db.Model):
+    __tablename__ = 'profile'
 
     id = db.Column(db.Integer, primary_key=True)
-    perfil = db.Column(db.String(25), nullable=False)
+    profile = db.Column(db.String(25), nullable=False)
     
     administrator_id = db.Column(db.Integer, db.ForeignKey('administrator.id'))
-    administrator = db.relationship("Administrator", back_populates="perfil")
+    administrator = db.relationship("Administrator", back_populates="profile")
 
     def __repr__(self):
-        return 'Perfil: {}'.format(self.perfil)
+        return 'Profile: {}'.format(self.profile)
     
     def serialize(self):
         return{
             "id": self.id,
-            "perfil": self.perfil
+            "perfil": self.profile
         }
     
 class Professor(db.Model):
@@ -80,6 +80,8 @@ class Professor(db.Model):
     password = db.Column(db.String(50), nullable=False)
     is_active = db.Column(db.Boolean(), nullable=False)
 
+    payment = db.relationship("Payment", backpopulates="professor")
+
     def __repr__(self):
         return 'Professor: {}'.format(self.name)
     
@@ -100,6 +102,11 @@ class Professor(db.Model):
             "email": self.email
         }
     
+class Payment(db.Model):
+    __tablename__ = 'payment'
+
+    id = db.Column(db.Integer, primary_key=True)
+
 class Student(db.Model):
     __tablename__ = 'student'
 
