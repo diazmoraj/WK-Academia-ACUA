@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
     
+# Tabla para registrar los administradores
 class Administrator(db.Model):
     __tablename__ = 'administrator'
 
@@ -22,7 +23,7 @@ class Administrator(db.Model):
     address = db.relationship("Address", back_populates="administrators")
 
     def __repr__(self):
-        return 'Administrator: {}'.format(self.name)
+        return f'Administrator: {self.name}'
     
     def serialize(self):
         return{
@@ -37,7 +38,8 @@ class Administrator(db.Model):
             "email": self.email,
             "address": self.address.serialize() if self.address else None
         }
-    
+
+#Tabla para registrar los perfiles de los administradores 
 class Profile(db.Model):
     __tablename__ = 'profile'
 
@@ -48,14 +50,15 @@ class Profile(db.Model):
     administrator = db.relationship("Administrator", back_populates="profile")
 
     def __repr__(self):
-        return 'Profile: {}'.format(self.profile)
+        return f'Profile: {self.profile}'
     
     def serialize(self):
         return{
             "id": self.id,
             "profile": self.profile
         }
-    
+
+#Tabla para registrar los profesores 
 class Professor(db.Model):
     __tablename__ = 'professor'
 
@@ -77,7 +80,7 @@ class Professor(db.Model):
     address = db.relationship("Address", back_populates="professors")
 
     def __repr__(self):
-        return 'Professor: {}'.format(self.name)
+        return f'Professor: {self.name}'
     
     def serialize(self):
         return{
@@ -93,7 +96,8 @@ class Professor(db.Model):
             "email": self.email,
             "address": self.address.serialize() if self.address else None
         }
-    
+
+#Tabla para registrar los tipos de pagos a los profesores 
 class Payment(db.Model):
     __tablename__ = 'payment'
 
@@ -106,7 +110,7 @@ class Payment(db.Model):
     professor = db.relationship("Professor", back_populates="payment")
 
     def __repr__(self):
-        return 'Payment: {}'.format(self.pay)
+        return f'Payment: {self.pay}'
     
     def serialize(self):
         return{
@@ -116,6 +120,7 @@ class Payment(db.Model):
             "IBAN": self.IBAN
         }
 
+#Tabla para registrar los estudiantes
 class Student(db.Model):
     __tablename__ = 'student'
 
@@ -141,7 +146,7 @@ class Student(db.Model):
     comment = db.relationship("Comment", back_populates="student")
 
     def __repr__(self):
-        return 'Student: {}'.format(self.name)
+        return f'Student: {self.name}'
     
     def serialize(self):
         return{
@@ -160,7 +165,7 @@ class Student(db.Model):
             "email": self.email,
             "address": self.address.serialize() if self.address else None
         }
-    
+#Tabla para registrar la factura electronica de los estudiantes 
 class Invoice(db.Model):
     __tablename__ = 'invoice'
 
@@ -177,7 +182,7 @@ class Invoice(db.Model):
     student = db.relationship("Student", back_populates="invoice")
 
     def __repr__(self):
-        return 'Invoice: {}'.format(self.name)
+        return f'Invoice: {self.name}'
     
     def serialize(self):
         return{
@@ -190,7 +195,7 @@ class Invoice(db.Model):
             "phone_number": self.phone_number,
             "email": self.email
         }
-
+#Tabla para registrar los instrumentos que se imparten
 class Instrument(db.Model):
     __tablename__ = 'instrument'
 
@@ -200,14 +205,15 @@ class Instrument(db.Model):
     course = db.relationship("Course", back_populates="instrument")
 
     def __repr__(self):
-        return 'Instrument: {}'.format(self.instrument)
+        return f'Instrument: {self.instrument}'
     
     def serialize(self):
         return{
             "id": self.id,
             "instrument": self.instrument
         }
-    
+
+#Tabla para registrar los cursos matriculados
 class Course(db.Model):
     __tablename__ = 'course'
 
@@ -222,14 +228,15 @@ class Course(db.Model):
     professor = db.relationship("Professor", back_populates="course")
 
     def __repr__(self):
-        return 'Course: {}'.format(self.modality)
+        return f'Course: {self.modality}'
     
     def serialize(self):
         return{
             "id": self.id,
             "modality": self.modality
         }
-    
+
+#Tabla para registrar las direcciones de todo el personal
 class Address(db.Model):
     __tablename__ = 'address'
 
@@ -252,7 +259,8 @@ class Address(db.Model):
             "canton": self.canton,
             "district": self.district
         }
-    
+
+#Tabla para registrar comentarios de los estudiantes a los profesores
 class Comment(db.Model):
     __tablename__ = 'comment'
 
@@ -263,10 +271,47 @@ class Comment(db.Model):
     student = db.relationship("Student", back_populates="comment")
 
     def __repr__(self):
-        return 'Comment: {}'.format(self.comment)
+        return f'Comment: {self.comment}'
     
     def serialize(self):
         return{
             "id": self.id,
             "comment": self.comment
         }
+
+#Tabla para registrar los proximos eventos de ACUA o aliados
+class Event(db.Model):
+    __tablename__ = 'event'
+
+    id = db.Column(db.Integer, primary_key=True)
+    event_date = db.Column(db.Date, nullable=False)
+    place = db.Column(db.String(50), nullable=False)
+    event = db.Column(db.String(50), nullable=False)
+
+    def __repr__(self):
+        return f'Event: {self.event}'
+    
+    def serialize(self):
+        return{
+            "id": self.id,
+            "event_date": self.event_date.isoformat() if self.event_date else None,
+            "place": self.place,
+            "event": self.event
+        }
+    
+#Tabla para registrar post en el blog
+class Post(db.Model):
+    __tablename__ = 'post'
+
+    id = db.Column(db.Integer, primary_key=True)
+    post = db.Column(db.String(1000), nullable=False)
+
+    def __repr__(self):
+        return f'Post: {self.event}'
+    
+    def serialize(self):
+        return{
+            "id": self.id,
+            "post": self.post
+        }
+    
