@@ -304,6 +304,11 @@ class Post(db.Model):
     __tablename__ = 'post'
 
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(250), nullable=False)
+    author = db.Colum(db.String(50), nullable=False)
+    origin_date = db.Column(db.Date, nullable=False)
+    publish_date = db.Column(db.Date, nullable=False)
+    theme = db.Column(db.String(250), nullable=False)
     post = db.Column(db.String(1000), nullable=False)
 
     def __repr__(self):
@@ -312,6 +317,10 @@ class Post(db.Model):
     def serialize(self):
         return{
             "id": self.id,
+            "title": self.title,
+            "author": self.author,
+            "origin_date": self.origin_date.isoformat() if self.origin_date else None,
+            "publish_date": self.publish_date.isoformat() if self.publish_date else None,
+            "theme": self.theme,
             "post": self.post
         }
-    
