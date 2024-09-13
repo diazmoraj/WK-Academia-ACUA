@@ -39,7 +39,7 @@ class Administrator(db.Model):
             "address": self.address.serialize() if self.address else None
         }
 
-#Tabla para registrar los perfiles de los administradores 
+# Tabla para registrar los perfiles de los administradores 
 class Profile(db.Model):
     __tablename__ = 'profile'
 
@@ -58,7 +58,7 @@ class Profile(db.Model):
             "profile": self.profile
         }
 
-#Tabla para registrar los profesores 
+# Tabla para registrar los profesores 
 class Professor(db.Model):
     __tablename__ = 'professor'
 
@@ -97,7 +97,7 @@ class Professor(db.Model):
             "address": self.address.serialize() if self.address else None
         }
 
-#Tabla para registrar los tipos de pagos a los profesores 
+# Tabla para registrar los tipos de pagos a los profesores 
 class Payment(db.Model):
     __tablename__ = 'payment'
 
@@ -120,7 +120,7 @@ class Payment(db.Model):
             "IBAN": self.IBAN
         }
 
-#Tabla para registrar los estudiantes
+# Tabla para registrar los estudiantes
 class Student(db.Model):
     __tablename__ = 'student'
 
@@ -165,7 +165,7 @@ class Student(db.Model):
             "email": self.email,
             "address": self.address.serialize() if self.address else None
         }
-#Tabla para registrar la factura electronica de los estudiantes 
+# Tabla para registrar la factura electronica de los estudiantes 
 class Invoice(db.Model):
     __tablename__ = 'invoice'
 
@@ -195,7 +195,7 @@ class Invoice(db.Model):
             "phone_number": self.phone_number,
             "email": self.email
         }
-#Tabla para registrar los instrumentos que se imparten
+# Tabla para registrar los instrumentos que se imparten
 class Instrument(db.Model):
     __tablename__ = 'instrument'
 
@@ -213,7 +213,7 @@ class Instrument(db.Model):
             "instrument": self.instrument
         }
 
-#Tabla para registrar los cursos matriculados
+# Tabla para registrar los cursos matriculados
 class Course(db.Model):
     __tablename__ = 'course'
 
@@ -236,7 +236,7 @@ class Course(db.Model):
             "modality": self.modality
         }
 
-#Tabla para registrar las direcciones de todo el personal
+# Tabla para registrar las direcciones de todo el personal
 class Address(db.Model):
     __tablename__ = 'address'
 
@@ -260,7 +260,7 @@ class Address(db.Model):
             "district": self.district
         }
 
-#Tabla para registrar comentarios de los estudiantes a los profesores
+# Tabla para registrar comentarios de los estudiantes a los profesores
 class Comment(db.Model):
     __tablename__ = 'comment'
 
@@ -279,7 +279,7 @@ class Comment(db.Model):
             "comment": self.comment
         }
 
-#Tabla para registrar los proximos eventos de ACUA o aliados
+# Tabla para registrar los proximos eventos de ACUA o aliados
 class Event(db.Model):
     __tablename__ = 'event'
 
@@ -287,7 +287,6 @@ class Event(db.Model):
     event_date = db.Column(db.Date, nullable=False)
     place = db.Column(db.String(50), nullable=False)
     event = db.Column(db.String(50), nullable=False)
-
     def __repr__(self):
         return f'Event: {self.event}'
     
@@ -299,7 +298,7 @@ class Event(db.Model):
             "event": self.event
         }
     
-#Tabla para registrar post en el blog
+# Tabla para registrar post en el blog
 class Post(db.Model):
     __tablename__ = 'post'
 
