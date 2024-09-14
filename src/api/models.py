@@ -169,6 +169,7 @@ class Student(db.Model):
             "email": self.email,
             "address": self.address.serialize() if self.address else None
         }
+    
 # Tabla para registrar la factura electronica de los estudiantes 
 class Invoice(db.Model):
     __tablename__ = 'invoice'
@@ -200,7 +201,7 @@ class Invoice(db.Model):
             "email": self.email
         }
     
-    # Tabla para registrar los tipos de pagos a los estudiantes 
+# Tabla para registrar los tipos de pagos a los estudiantes 
 class PaymentStudent(db.Model):
     __tablename__ = 'paymentstudent'
 
