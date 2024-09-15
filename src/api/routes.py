@@ -154,3 +154,101 @@ def get_all_course():
     return jsonify({"data": courses_serialized}), 200
 
 # Metodos GET ID de las tablas
+@api.route('/api/administrator/<int:number_cardID>', methods=['GET'])
+def get_single_administrator(number_cardID):
+    single_administrator = Administrator.query.filter_by(number_cardID = number_cardID).first()
+    if single_administrator is None:
+        return jsonify({"msg": "El administrador con el ID: {} no existe".format(number_cardID)}), 400
+    return jsonify({"data": single_administrator.serialize()}), 200
+
+@api.route('/api/professor/<int:number_cardID>', methods=['GET'])
+def get_single_professor(number_cardID):
+    single_professor = Professor.query.filter_by(number_cardID = number_cardID).first()
+    if single_professor is None:
+        return jsonify({"msg": "El profesor con el ID: {} no existe".format(number_cardID)}), 400
+    return jsonify({"data": single_professor.serialize()}), 200
+
+@api.route('/api/student/<int:number_cardID>', methods=['GET'])
+def get_single_student(number_cardID):
+    single_student = Student.query.filter_by(number_cardID = number_cardID).first()
+    if single_student is None:
+        return jsonify({"msg": "El estudiante con el ID: {} no existe".format(number_cardID)}), 400
+    return jsonify({"data": single_student.serialize()}), 200
+
+@api.route('/api/profile/<int:id>', methods=['GET'])
+def get_single_profile(id):
+    single_profile = Profile.query.get(id)
+    if single_profile is None:
+        return jsonify({"msg": "El perfil con el ID: {} no existe".format(id)}), 400
+    return jsonify({"data": single_profile.serialize()}), 200
+
+@api.route('/api/paymentprofessor/<int:id>', methods=['GET'])
+def get_single_paymentprofessor(id):
+    single_paymentprofessor = PaymentProfessor.query.get(id)
+    if single_paymentprofessor is None:
+        return jsonify({"msg": "El pago de profesor con el ID: {} no existe".format(id)}), 400
+    return jsonify({"data": single_paymentprofessor.serialize()}), 200
+
+@api.route('/api/paymentstudent/<int:id>', methods=['GET'])
+def get_single_paymentstudent(id):
+    single_paymentstudent = PaymentStudent.query.get(id)
+    if single_paymentstudent is None:
+        return jsonify({"msg": "El pago de estudiante con el ID: {} no existe".format(id)}), 400
+    return jsonify({"data": single_paymentstudent.serialize()}), 200
+
+@api.route('/api/commentprofessor/<int:id>', methods=['GET'])
+def get_single_commentprofessor(id):
+    single_commentprofessor = CommentProfessor.query.get(id)
+    if single_commentprofessor is None:
+        return jsonify({"msg": "El comentario de profesor con el ID: {} no existe".format(id)}), 400
+    return jsonify({"data": single_commentprofessor.serialize()}), 200
+
+@api.route('/api/commentstudent/<int:id>', methods=['GET'])
+def get_single_commenttstudent(id):
+    single_commentstudent = CommentStudent.query.get(id)
+    if single_commentstudent is None:
+        return jsonify({"msg": "El comentario de estudiante con el ID: {} no existe".format(id)}), 400
+    return jsonify({"data": single_commentstudent.serialize()}), 200
+
+@api.route('/api/post/<int:id>', methods=['GET'])
+def get_single_post(id):
+    single_post = Post.query.get(id)
+    if single_post is None:
+        return jsonify({"msg": "El post con el ID: {} no existe".format(id)}), 400
+    return jsonify({"data": single_post.serialize()}), 200
+
+@api.route('/api/event/<int:id>', methods=['GET'])
+def get_single_event(id):
+    single_event = Event.query.get(id)
+    if single_event is None:
+        return jsonify({"msg": "El evento con el ID: {} no existe".format(id)}), 400
+    return jsonify({"data": single_event.serialize()}), 200
+
+@api.route('/api/address/<int:id>', methods=['GET'])
+def get_single_address(id):
+    single_address = Address.query.get(id)
+    if single_address is None:
+        return jsonify({"msg": "La direccion con el ID: {} no existe".format(id)}), 400
+    return jsonify({"data": single_address.serialize()}), 200
+
+@api.route('/api/invoice/<int:id>', methods=['GET'])
+def get_single_invoice(id):
+    single_invoice = Invoice.query.get(id)
+    if single_invoice is None:
+        return jsonify({"msg": "La informacion de la factura electronica" +
+                        "con el ID: {} no existe".format(id)}), 400
+    return jsonify({"data": single_invoice.serialize()}), 200
+
+@api.route('/api/instrument/<int:id>', methods=['GET'])
+def get_single_instrument(id):
+    single_instrument = Instrument.query.get(id)
+    if single_instrument is None:
+        return jsonify({"msg": "El instrumento con el ID: {} no existe".format(id)}), 400
+    return jsonify({"data": single_instrument.serialize()}), 200
+
+@api.route('/api/course/<int:id>', methods=['GET'])
+def get_single_course(id):
+    single_course = Course.query.get(id)
+    if single_course is None:
+        return jsonify({"msg": "El curso con el ID: {} no existe".format(id)}), 400
+    return jsonify({"data": single_course.serialize()}), 200
