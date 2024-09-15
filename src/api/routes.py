@@ -71,3 +71,86 @@ def get_all_paymentprofessor():
         paymentprofesors_serialized.append(paymentprofessor.serialize())
         print(paymentprofesors_serialized)
     return jsonify({"data": paymentprofesors_serialized}), 200
+
+@api.route('/api/paymentstudent', methods=['GET'])
+def get_all_paymentstudent():
+    all_paymentstudents = PaymentStudent.query.all()
+    paymentstudents_serialized = []
+    for paymentstudent in all_paymentstudents:
+        paymentstudents_serialized.append(paymentstudent.serialize())
+        print(paymentstudents_serialized)
+    return jsonify({"data": paymentstudents_serialized}), 200
+
+@api.route('/api/commentprofessor', methods=['GET'])
+def get_all_commentprofessor():
+    all_commentprofessors = CommentProfessor.query.all()
+    commentprofessors_serialized = []
+    for commentprofessor in all_commentprofessors:
+        commentprofessors_serialized.append(commentprofessor.serialize())
+        print(commentprofessors_serialized)
+    return jsonify({"data": commentprofessors_serialized}), 200
+
+@api.route('/api/commentstudent', methods=['GET'])
+def get_all_commentstudent():
+    all_commentstudents = CommentStudent.query.all()
+    commentstudents_serialized = []
+    for commentstudent in all_commentstudents:
+        commentstudents_serialized.append(commentstudent.serialize())
+        print(commentstudents_serialized)
+    return jsonify({"data": commentstudents_serialized}), 200
+
+@api.route('/api/post', methods=['GET'])
+def get_all_post():
+    all_post = Post.query.all()
+    posts_serialized = []
+    for post in all_post:
+        posts_serialized.append(post.serialize())
+        print(posts_serialized)
+    return jsonify({"data": posts_serialized}), 200
+
+@api.route('/api/event', methods=['GET'])
+def get_all_event():
+    all_event = Event.query.all()
+    events_serialized = []
+    for event in all_event:
+        events_serialized.append(event.serialize())
+        print(events_serialized)
+    return jsonify({"data": events_serialized}), 200
+
+@api.route('/api/address', methods=['GET'])
+def get_all_address():
+    all_address = Address.query.all()
+    addresses_serialized = []
+    for address in all_address:
+        addresses_serialized.append(address.serialize())
+        print(addresses_serialized)
+    return jsonify({"data": addresses_serialized}), 200
+
+@api.route('/api/invoice', methods=['GET'])
+def get_all_invoice():
+    all_invoice = Invoice.query.all()
+    invoices_serialized = []
+    for invoice in all_invoice:
+        invoices_serialized.append(invoice.serialize())
+        print(invoices_serialized)
+    return jsonify({"data": invoices_serialized}), 200
+
+@api.route('/api/instrument', methods=['GET'])
+def get_all_instrument():
+    all_instrument = Instrument.query.all()
+    instruments_serialized = []
+    for instrument in all_instrument:
+        instruments_serialized.append(instrument.serialize())
+        print(instruments_serialized)
+    return jsonify({"data": instruments_serialized}), 200
+
+@api.route('/api/course', methods=['GET'])
+def get_all_course():
+    all_course = Course.query.all()
+    courses_serialized = []
+    for course in all_course:
+        courses_serialized.append(course.serialize())
+        print(courses_serialized)
+    return jsonify({"data": courses_serialized}), 200
+
+# Metodos GET ID de las tablas
