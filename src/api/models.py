@@ -19,8 +19,8 @@ class Administrator(db.Model):
     is_active = db.Column(db.Boolean(), nullable=False)
 
     profile = db.relationship("Profile", back_populates="administrator", lazy="joined")
-    address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
-    address = db.relationship("Address", back_populates="administrators", lazy="joined")
+
+    address = db.relationship("Address", back_populates="administrator", lazy="joined")
 
     def __repr__(self):
         return f'Administrator: {self.name}'
@@ -76,9 +76,12 @@ class Professor(db.Model):
     is_active = db.Column(db.Boolean(), nullable=False)
 
     paymentprofessor = db.relationship("PaymentProfessor", back_populates="professor", lazy="joined")
+
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     address = db.relationship("Address", back_populates="professors", lazy="joined")
+
     commentprofessor = db.relationship("CommentProfessor", back_populates="professor", lazy="joined")
+
     course = db.relationship("Course", back_populates="professor", lazy="joined")
 
     def __repr__(self):
@@ -143,10 +146,14 @@ class Student(db.Model):
     is_active = db.Column(db.Boolean(), nullable=False)
 
     invoice = db.relationship("Invoice", back_populates="student", lazy="joined")
+
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     address = db.relationship("Address", back_populates="students", lazy="joined")
+
     commentstudent = db.relationship("CommentStudent", back_populates="student", lazy="joined")
+
     paymentstudent = db.relationship("PaymentStudent", back_populates="student", lazy="joined")
+    
     course = db.relationship("Course", back_populates="student", lazy="joined")
 
     def __repr__(self):
@@ -274,8 +281,13 @@ class Address(db.Model):
     canton = db.Column(db.String(50), nullable=False)
     district = db.Column(db.String(50), nullable=False)
 
-    administrators = db.relationship("Administrator", back_populates="address", lazy="joined")
-    professors = db.relationship("Professor", back_populates="address", lazy="joined")
+    administrator_id = db.Column(db.Integer, db.ForeignKey('administrator.id'))
+    administrator = db.relationship("Administrator", back_populates="profile", lazy="joined")
+    
+    professor_id = db.Column(db.Integer, db.ForeignKey('professor.id'))
+    professor = db.relationship("Professor", back_populates="address", lazy="joined")
+
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
     students = db.relationship("Student", back_populates="address", lazy="joined")
 
     def __repr__(self):
