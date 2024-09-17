@@ -336,15 +336,260 @@ def new_student():
     
     return jsonify({"msg": "OK"}), 200
 
+@api.route('/api/profile', methods=['POST'])
+def new_profile():
+    required_fields = ["profile"]
+    
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Debes completar toda la informacion para continuar"}), 400
+    
+    missing_fields = [field for field in required_fields if field not in body]
 
-from api.models import Profile
-from api.models import PaymentProfessor
-from api.models import PaymentStudent
-from api.models import CommentProfessor
-from api.models import CommentStudent
-from api.models import Post
-from api.models import Event
-from api.models import Address
-from api.models import Invoice
-from api.models import Instrument
+    if missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    new_profile = Profile()
+    for field in required_fields:
+        setattr(new_profile, field, body[field])
+
+    try:
+        db.session.add(new_profile)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/paymentprofessor', methods=['POST'])
+def new_paymentprofessor():
+    required_fields = ["pay", "SINPE", "IBAN"]
+    
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Debes completar toda la informacion para continuar"}), 400
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    new_paymentprofessor = PaymentProfessor()
+    for field in required_fields:
+        setattr(new_paymentprofessor, field, body[field])
+
+    try:
+        db.session.add(new_paymentprofessor)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/paymentstudent', methods=['POST'])
+def new_paymentstudent():
+    required_fields = ["pay_date", "limit_pay_date", "mount"]
+    
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Debes completar toda la informacion para continuar"}), 400
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    new_paymentstudent = PaymentStudent()
+    for field in required_fields:
+        setattr(new_paymentstudent, field, body[field])
+
+    try:
+        db.session.add(new_paymentstudent)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/commentprofessor', methods=['POST'])
+def new_commentprofessor():
+    required_fields = ["comment_professor"]
+    
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Debes completar toda la informacion para continuar"}), 400
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    new_commentprofessor = CommentProfessor()
+    for field in required_fields:
+        setattr(new_commentprofessor, field, body[field])
+
+    try:
+        db.session.add(new_commentprofessor)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/commentstudent', methods=['POST'])
+def new_commentstudent():
+    required_fields = ["comment_student"]
+    
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Debes completar toda la informacion para continuar"}), 400
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    new_commentstudent = CommentStudent()
+    for field in required_fields:
+        setattr(new_commentstudent, field, body[field])
+
+    try:
+        db.session.add(new_commentstudent)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/post', methods=['POST'])
+def new_post():
+    required_fields = ["title", "author", "origin_date", "publish_date", "theme", "post"]
+    
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Debes completar toda la informacion para continuar"}), 400
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    new_post = Post()
+    for field in required_fields:
+        setattr(new_post, field, body[field])
+
+    try:
+        db.session.add(new_post)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/event', methods=['POST'])
+def new_event():
+    required_fields = ["event_date", "place", "event"]
+    
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Debes completar toda la informacion para continuar"}), 400
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    new_event = Event()
+    for field in required_fields:
+        setattr(new_event, field, body[field])
+
+    try:
+        db.session.add(new_event)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/address', methods=['POST'])
+def new_address():
+    required_fields = ["province", "canton", "district"]
+    
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Debes completar toda la informacion para continuar"}), 400
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    new_address = Address()
+    for field in required_fields:
+        setattr(new_address, field, body[field])
+
+    try:
+        db.session.add(new_address)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/invoice', methods=['POST'])
+def new_invoice():
+    required_fields = ["name", "last_name1", "last_name2", "cardID_type",
+                       "number_cardID", "phone_number", "email"]
+    
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Debes completar toda la informacion para continuar"}), 400
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    new_invoice = Invoice()
+    for field in required_fields:
+        setattr(new_invoice, field, body[field])
+
+    try:
+        db.session.add(new_invoice)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/instrument', methods=['POST'])
+def new_instrument():
+    required_fields = ["instrument"]
+    
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Debes completar toda la informacion para continuar"}), 400
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    new_instrument = Instrument()
+    for field in required_fields:
+        setattr(new_instrument, field, body[field])
+
+    try:
+        db.session.add(new_instrument)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+
+
+
+
+
 from api.models import Course
