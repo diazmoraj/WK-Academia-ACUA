@@ -273,6 +273,18 @@ def new_administrator():
     for field in required_fields:
         setattr(new_administrator, field, body[field])
 
+    if 'profile' in body:
+        profile_data = body['profile']
+        new_profile = Profile(profile=profile_data['profile'])
+        new_administrator.profile = new_profile
+
+    if 'address' in body:
+        address_data = body['address']
+        new_address = Address(province=address_data.get('province'),
+                              canton=address_data.get('canton'),
+                              district=address_data.get('district'))
+        new_administrator.address = new_address
+
     try:
         db.session.add(new_administrator)
         db.session.commit()
@@ -285,7 +297,7 @@ def new_administrator():
 def new_professor():
     required_fields = ["name", "last_name1", "last_name2", "cardID_type",
                        "number_cardID", "birthday", "country", "phone_number", 
-                       "email", "password"]
+                       "email", "password", "is_active"]
     
     body = request.get_json(silent=True)
     if body is None:

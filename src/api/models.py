@@ -36,7 +36,9 @@ class Administrator(db.Model):
             "birthday": self.birthday.isoformat() if self.birthday else None,
             "phone_number": self.phone_number,
             "email": self.email,
-            "address": self.address.serialize() if self.address else None
+            "profile": self.profile.serialize() if self.profile else None,
+            "address": self.address.serialize() if self.address else None,
+            "is_active": self.is_active
         }
 
 # Tabla para registrar los perfiles de los administradores 
