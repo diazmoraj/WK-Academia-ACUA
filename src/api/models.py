@@ -77,7 +77,6 @@ class Professor(db.Model):
 
     paymentprofessor = db.relationship("PaymentProfessor", back_populates="professor", lazy="joined")
 
-    address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     address = db.relationship("Address", back_populates="professors", lazy="joined")
 
     commentprofessor = db.relationship("CommentProfessor", back_populates="professor", lazy="joined")
@@ -147,7 +146,6 @@ class Student(db.Model):
 
     invoice = db.relationship("Invoice", back_populates="student", lazy="joined")
 
-    address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
     address = db.relationship("Address", back_populates="students", lazy="joined")
 
     commentstudent = db.relationship("CommentStudent", back_populates="student", lazy="joined")
@@ -258,8 +256,10 @@ class Course(db.Model):
 
     instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'))
     instrument = db.relationship("Instrument", back_populates="course")
+
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
     student = db.relationship("Student", back_populates="course", lazy="joined")
+
     professor_id = db.Column(db.Integer, db.ForeignKey('professor.id'))
     professor = db.relationship("Professor", back_populates="course", lazy="joined")
 
