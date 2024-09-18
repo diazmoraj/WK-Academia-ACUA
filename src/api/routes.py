@@ -258,7 +258,7 @@ def get_single_course(id):
 def new_administrator():
     required_fields = ["name", "last_name1", "last_name2", "cardID_type",
                        "number_cardID", "birthday", "phone_number", 
-                       "email", "password"]
+                       "email", "password", "is_active"]
     
     body = request.get_json(silent=True)
     if body is None:
@@ -312,6 +312,30 @@ def new_professor():
     for field in required_fields:
         setattr(new_professor, field, body[field])
 
+    if 'paymentprofessor' in body:
+        paymentprofessor_data = body['paymmentprofessor']
+        new_paymentprofessor = PaymentProfessor(pay=paymentprofessor_data.get('pay'),
+                                                SINPE=paymentprofessor_data.get('SINPE'),
+                                                IBAN=paymentprofessor_data.get('IBAN'))
+        new_professor.paymentprofessor = new_paymentprofessor 
+
+    if 'address' in body:
+        address_data = body['address']
+        new_address = Address(province=address_data.get('province'),
+                              canton=address_data.get('canton'),
+                              district=address_data.get('district'))
+        new_professor.address = new_address
+
+    if 'commentprofessor' in body:
+        commentprofessor_data = body['commentprofessor']
+        new_commentprofessor = CommentProfessor(commentprofessor=commentprofessor_data['commentprofessor'])
+        new_professor.commentprofessor = new_commentprofessor
+
+    if 'course' in body:
+        course_data = body['course']
+        new_course = Course(course=course_data['course'])
+        new_professor.course = new_course
+
     try:
         db.session.add(new_professor)
         db.session.commit()
@@ -325,7 +349,7 @@ def new_student():
     required_fields = ["name", "last_name1", "last_name2", "cardID_type",
                        "number_cardID", "birthday", "phone_number", 
                        "responsable", "emergency_contact", "phone_emergency",
-                       "diagnostic", "email", "password"]
+                       "diagnostic", "email", "password", "is_active"]
     
     body = request.get_json(silent=True)
     if body is None:
@@ -339,6 +363,41 @@ def new_student():
     new_student = Student()
     for field in required_fields:
         setattr(new_student, field, body[field])
+
+    if 'paymentstudent' in body:
+        paymentstudent_data = body['paymmentstudent']
+        new_paymentstudent = PaymentStudent(pay_date=paymentstudent_data.get('pay_date'),
+                                            limit_pay_date=paymentstudent_data.get('limit_pay_date'),
+                                            mount=paymentstudent_data.get('mount'))
+        new_student.paymentstudent = new_paymentstudent
+
+    if 'address' in body:
+        address_data = body['address']
+        new_address = Address(province=address_data.get('province'),
+                              canton=address_data.get('canton'),
+                              district=address_data.get('district'))
+        new_student.address = new_address
+
+    if 'commentstudent' in body:
+        commentstudent_data = body['commentstudent']
+        new_commentstudent = CommentStudent(commentstudent=commentstudent_data['commentstudent'])
+        new_student.commentstudent = new_commentstudent
+
+    if 'course' in body:
+        course_data = body['course']
+        new_course = Course(course=course_data['course'])
+        new_student.course = new_course
+
+    if 'invoice' in body:
+        invoice_data = body['invoice']
+        new_invoice = Invoice(name=invoice_data.get('name'),
+                              last_name1=invoice_data.get('last_name1'),
+                              last_name2=invoice_data.get('last_name2'),
+                              cardID_type=invoice_data.get('cardID_type'),
+                              number_cardID=invoice_data.get('number_cardID'),
+                              phone_number=invoice_data.get('phone_number'),
+                              email=invoice_data.get('email'))
+        new_student.invoice = new_invoice
 
     try:
         db.session.add(new_student)
