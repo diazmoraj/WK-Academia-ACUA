@@ -449,6 +449,19 @@ def new_paymentprofessor():
     for field in required_fields:
         setattr(new_paymentprofessor, field, body[field])
 
+    if 'professor' in body:
+        professor_data = body['professor']
+        new_professor = Professor(name=professor_data.get('name'),
+                                  last_name1=professor_data.get('last_name1'),
+                                  last_name2=professor_data.get('last_name2'),
+                                  cardID_type=professor_data.get('cardID_type'),
+                                  number_cardID=professor_data.get('number_cardID'),
+                                  birthday=professor_data.get('birthday'),
+                                  country=professor_data.get('country'),
+                                  phone_number=professor_data.get('phone_number'),
+                                  email=professor_data.get('email'))
+        new_professor.professor = new_professor
+
     try:
         db.session.add(new_paymentprofessor)
         db.session.commit()
@@ -473,6 +486,23 @@ def new_paymentstudent():
     new_paymentstudent = PaymentStudent()
     for field in required_fields:
         setattr(new_paymentstudent, field, body[field])
+
+    if 'student' in body:
+        student_data = body['student']
+        new_student = Student(name=student_data.get('name'),
+                              last_name1=student_data.get('last_name1'),
+                              last_name2=student_data.get('last_name2'),
+                              cardID_type=student_data.get('cardID_type'),
+                              number_cardID=student_data.get('number_cardID'),
+                              birthday=student_data.get('birthday'),
+                              country=student_data.get('country'),
+                              phone_number=student_data.get('phone_number'),
+                              responsable=student_data.get('responsable'),
+                              emergency_contact=student_data.get('emergency_contact'),
+                              phone_emergency=student_data.get('phone.emergency'),
+                              diagnostic=student_data.get('diagnostic'),
+                              email=student_data.get('email'))
+        new_student.student = new_event
 
     try:
         db.session.add(new_paymentstudent)
@@ -499,6 +529,19 @@ def new_commentprofessor():
     for field in required_fields:
         setattr(new_commentprofessor, field, body[field])
 
+    if 'professor' in body:
+        professor_data = body['professor']
+        new_professor = Professor(name=professor_data.get('name'),
+                                  last_name1=professor_data.get('last_name1'),
+                                  last_name2=professor_data.get('last_name2'),
+                                  cardID_type=professor_data.get('cardID_type'),
+                                  number_cardID=professor_data.get('number_cardID'),
+                                  birthday=professor_data.get('birthday'),
+                                  country=professor_data.get('country'),
+                                  phone_number=professor_data.get('phone_number'),
+                                  email=professor_data.get('email'))
+        new_professor.professor = new_professor
+
     try:
         db.session.add(new_commentprofessor)
         db.session.commit()
@@ -523,6 +566,23 @@ def new_commentstudent():
     new_commentstudent = CommentStudent()
     for field in required_fields:
         setattr(new_commentstudent, field, body[field])
+
+    if 'student' in body:
+        student_data = body['student']
+        new_student = Student(name=student_data.get('name'),
+                              last_name1=student_data.get('last_name1'),
+                              last_name2=student_data.get('last_name2'),
+                              cardID_type=student_data.get('cardID_type'),
+                              number_cardID=student_data.get('number_cardID'),
+                              birthday=student_data.get('birthday'),
+                              country=student_data.get('country'),
+                              phone_number=student_data.get('phone_number'),
+                              responsable=student_data.get('responsable'),
+                              emergency_contact=student_data.get('emergency_contact'),
+                              phone_emergency=student_data.get('phone.emergency'),
+                              diagnostic=student_data.get('diagnostic'),
+                              email=student_data.get('email'))
+        new_student.student = new_event
 
     try:
         db.session.add(new_commentstudent)
@@ -625,6 +685,23 @@ def new_invoice():
     for field in required_fields:
         setattr(new_invoice, field, body[field])
 
+    if 'student' in body:
+        student_data = body['student']
+        new_student = Student(name=student_data.get('name'),
+                              last_name1=student_data.get('last_name1'),
+                              last_name2=student_data.get('last_name2'),
+                              cardID_type=student_data.get('cardID_type'),
+                              number_cardID=student_data.get('number_cardID'),
+                              birthday=student_data.get('birthday'),
+                              country=student_data.get('country'),
+                              phone_number=student_data.get('phone_number'),
+                              responsable=student_data.get('responsable'),
+                              emergency_contact=student_data.get('emergency_contact'),
+                              phone_emergency=student_data.get('phone.emergency'),
+                              diagnostic=student_data.get('diagnostic'),
+                              email=student_data.get('email'))
+        new_student.student = new_event 
+
     try:
         db.session.add(new_invoice)
         db.session.commit()
@@ -658,9 +735,40 @@ def new_instrument():
     
     return jsonify({"msg": "OK"}), 200
 
+@api.route('/api/course', methods=['POST'])
+def new_course():
+    required_fields = ["instrument_id", "student_id", "professor_id", "modality"]
 
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "Debes completar toda la información para continuar"}), 400
+    
+    missing_fields = [field for field in required_fields if field not in body]
+    if missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    instrument = Instrument.query.get(body["instrument_id"])
+    student = Student.query.get(body["student_id"])
+    professor = Professor.query.get(body["professor_id"])
 
+    if not instrument:
+        return jsonify({"msg": f"El instrumento con id {body['instrument_id']} no existe."}), 404
+    if not student:
+        return jsonify({"msg": f"El estudiante con id {body['student_id']} no existe."}), 404
+    if not professor:
+        return jsonify({"msg": f"El profesor con id {body['professor_id']} no existe."}), 404
 
+    new_course = Course(
+        instrument_id=body["instrument_id"],
+        student_id=body["student_id"],
+        professor_id=body["professor_id"],
+        modality=body["modality"]
+    )
 
-
-from api.models import Course
+    try:
+        db.session.add(new_course)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
