@@ -661,3 +661,33 @@ def new_course():
         return jsonify({"msg": error.args[0]}), 500
     
     return jsonify({"msg": "OK"}), 200
+
+# Metodos PUT de las tablas
+@api.route('/api/administrator/<int:id>', methods=['PUT'])
+def update_administrator(id):
+    body = request.get_json(silent=True)
+
+    required_fields = ["name", "last_name1", "last_name2", "cardID_type",
+                       "number_cardID", "birthday", "phone_number", 
+                       "email", "password", "profile_id",
+                       "address_id"]
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if body is None or missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    update_administrator = Administrator.query.get(id)
+    if update_administrator is None:
+        return jsonify({"msg": "Administrador no encontrado"}), 400
+    
+    for field in required_fields:
+        setattr(update_administrator, field, body[field])
+
+    try:
+        db.session.add(update_administrator)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
