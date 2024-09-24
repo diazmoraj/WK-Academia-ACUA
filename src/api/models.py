@@ -19,8 +19,8 @@ class Administrator(db.Model):
     is_active = db.Column(db.Boolean(), nullable=False)
 
     profile = db.relationship("Profile", back_populates="administrator", lazy="joined")
-    address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
-    address = db.relationship("Address", back_populates="administrators", lazy="joined")
+
+    address = db.relationship("Address", back_populates="administrator", lazy="joined")
 
     def __repr__(self):
         return f'Administrator: {self.name}'
@@ -36,7 +36,9 @@ class Administrator(db.Model):
             "birthday": self.birthday.isoformat() if self.birthday else None,
             "phone_number": self.phone_number,
             "email": self.email,
-            "address": self.address.serialize() if self.address else None
+            "profile": self.profile.serialize() if self.profile else None,
+            "address": self.address.serialize() if self.address else None,
+            "is_active": self.is_active
         }
 
 # Tabla para registrar los perfiles de los administradores 
@@ -55,7 +57,8 @@ class Profile(db.Model):
     def serialize(self):
         return{
             "id": self.id,
-            "profile": self.profile
+            "profile": self.profile,
+            "administrator": self.administrator.serialize() if self.administrator else None,
         }
 
 # Tabla para registrar los profesores 
@@ -76,9 +79,11 @@ class Professor(db.Model):
     is_active = db.Column(db.Boolean(), nullable=False)
 
     paymentprofessor = db.relationship("PaymentProfessor", back_populates="professor", lazy="joined")
-    address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
+
     address = db.relationship("Address", back_populates="professors", lazy="joined")
+
     commentprofessor = db.relationship("CommentProfessor", back_populates="professor", lazy="joined")
+
     course = db.relationship("Course", back_populates="professor", lazy="joined")
 
     def __repr__(self):
@@ -96,7 +101,11 @@ class Professor(db.Model):
             "country": self.country,
             "phone_number": self.phone_number,
             "email": self.email,
-            "address": self.address.serialize() if self.address else None
+            "paymentprofessor":self.paymentprofessor.serialize() if self.paymentprofessor else None,
+            "address": self.address.serialize() if self.address else None,
+            "commentprofessor": self.commentprofessor.serialize() if self.commentprofessor else None,
+            "course": self.course.serialize() if self.course else None,
+            "is_active": self.is_active
         }
 
 # Tabla para registrar los tipos de pagos a los profesores 
@@ -119,7 +128,8 @@ class PaymentProfessor(db.Model):
             "id": self.id,
             "pay": self.pay,
             "SINPE": self.SINPE,
-            "IBAN": self.IBAN
+            "IBAN": self.IBAN,
+            "professor": self.professor.serialize() if self.professor else None
         }
 
 # Tabla para registrar los estudiantes
@@ -143,10 +153,13 @@ class Student(db.Model):
     is_active = db.Column(db.Boolean(), nullable=False)
 
     invoice = db.relationship("Invoice", back_populates="student", lazy="joined")
-    address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
+
     address = db.relationship("Address", back_populates="students", lazy="joined")
+
     commentstudent = db.relationship("CommentStudent", back_populates="student", lazy="joined")
+
     paymentstudent = db.relationship("PaymentStudent", back_populates="student", lazy="joined")
+    
     course = db.relationship("Course", back_populates="student", lazy="joined")
 
     def __repr__(self):
@@ -167,8 +180,14 @@ class Student(db.Model):
             "phone_emergency": self.phone_emergency,
             "diagnostic": self.diagnostic,
             "email": self.email,
-            "address": self.address.serialize() if self.address else None
+            "is_active": self.is_active,
+            "invoice": self.invoice.serialize() if self.invoice else None,
+            "address": self.address.serialize() if self.address else None,
+            "commentstudent": self.commentstudent.serialize() if self.commentstudent else None,
+            "paymentstudent": self.paymentstudent.serialize() if self.paymentstudent else None,
+            "course": self.course.serialize() if self.course else None
         }
+    
 # Tabla para registrar la factura electronica de los estudiantes 
 class Invoice(db.Model):
     __tablename__ = 'invoice'
@@ -197,10 +216,11 @@ class Invoice(db.Model):
             "cardID_type": self.cardID_type,
             "number_cardID": self.number_cardID,
             "phone_number": self.phone_number,
-            "email": self.email
+            "email": self.email,
+            "student": self.student.serialize() if self.student else None
         }
     
-    # Tabla para registrar los tipos de pagos a los estudiantes 
+# Tabla para registrar los tipos de pagos a los estudiantes 
 class PaymentStudent(db.Model):
     __tablename__ = 'paymentstudent'
 
@@ -220,7 +240,8 @@ class PaymentStudent(db.Model):
             "id": self.id,
             "pay_date": self.pay_date,
             "limit_pay_date": self.limit_pay_date,
-            "mount": self.mount
+            "mount": self.mount,
+            "student": self.student.serialize() if self.student else None
         }
     
 # Tabla para registrar los instrumentos que se imparten
@@ -238,7 +259,8 @@ class Instrument(db.Model):
     def serialize(self):
         return{
             "id": self.id,
-            "instrument": self.instrument
+            "instrument": self.instrument,
+            "course": self.course.serialize() if self.course else None
         }
 
 # Tabla para registrar los cursos matriculados
@@ -250,8 +272,10 @@ class Course(db.Model):
 
     instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'))
     instrument = db.relationship("Instrument", back_populates="course")
+
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
     student = db.relationship("Student", back_populates="course", lazy="joined")
+
     professor_id = db.Column(db.Integer, db.ForeignKey('professor.id'))
     professor = db.relationship("Professor", back_populates="course", lazy="joined")
 
@@ -261,7 +285,10 @@ class Course(db.Model):
     def serialize(self):
         return{
             "id": self.id,
-            "modality": self.modality
+            "modality": self.modality,
+            "instrument": self.instrument.serialize() if self.instrument else None,
+            "student": self.student.serialize() if self.instrument else None,
+            "professor": self.professor.serialze() if self.professor else None
         }
 
 # Tabla para registrar las direcciones de todo el personal
@@ -273,9 +300,14 @@ class Address(db.Model):
     canton = db.Column(db.String(50), nullable=False)
     district = db.Column(db.String(50), nullable=False)
 
-    administrators = db.relationship("Administrator", back_populates="address", lazy="joined")
-    professors = db.relationship("Professor", back_populates="address", lazy="joined")
-    students = db.relationship("Student", back_populates="address", lazy="joined")
+    administrator_id = db.Column(db.Integer, db.ForeignKey('administrator.id'))
+    administrator = db.relationship("Administrator", back_populates="profile", lazy="joined")
+    
+    professor_id = db.Column(db.Integer, db.ForeignKey('professor.id'))
+    professor = db.relationship("Professor", back_populates="address", lazy="joined")
+
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
+    student = db.relationship("Student", back_populates="address", lazy="joined")
 
     def __repr__(self):
         return f'Address: {self.province}, {self.canton}, {self.district}'
@@ -285,7 +317,10 @@ class Address(db.Model):
             "id": self.id,
             "province": self.province,
             "canton": self.canton,
-            "district": self.district
+            "district": self.district,
+            "administrator": self.administrator.serialize() if self.administrator else None,
+            "professor": self.professor.serialize() if self.professor else None,
+            "student": self.student.serialize() if self.student else None
         }
 
 # Tabla para registrar comentarios de los estudiantes a los profesores
@@ -304,7 +339,8 @@ class CommentStudent(db.Model):
     def serialize(self):
         return{
             "id": self.id,
-            "comment_student": self.comment_student
+            "comment_student": self.comment_student,
+            "student": self.student.serialize() if self.student else None
         }
 
 # Tabla para registrar comentarios de los profesores a los estudiantes
@@ -323,7 +359,8 @@ class CommentProfessor(db.Model):
     def serialize(self):
         return{
             "id": self.id,
-            "comment_professor": self.comment_professor
+            "comment_professor": self.comment_professor,
+            "professor": self.professor.serialize() if self.professor else None
         }
     
 # Tabla para registrar los proximos eventos de ACUA o aliados
