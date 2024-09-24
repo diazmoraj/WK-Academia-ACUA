@@ -258,7 +258,8 @@ def get_single_course(id):
 def new_administrator():
     required_fields = ["name", "last_name1", "last_name2", "cardID_type",
                        "number_cardID", "birthday", "phone_number", 
-                       "email", "password", "is_active"]
+                       "email", "password", "is_active", "profile_id",
+                       "address_id"]
     
     body = request.get_json(silent=True)
     if body is None:
@@ -269,21 +270,17 @@ def new_administrator():
     if missing_fields:
         return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
     
+    profile = Profile.query.get(body['profile_id'])
+    if not profile:
+        return jsonify({"msg": f"El perfil con id {body['profile_id']} no existe."}), 404
+
+    address = Address.query.get(body['address_id'])
+    if not address:
+        return jsonify({"msg": f"La dirección con id {body['address_id']} no existe."}), 404
+    
     new_administrator = Administrator()
     for field in required_fields:
         setattr(new_administrator, field, body[field])
-
-    if 'profile' in body:
-        profile_data = body['profile']
-        new_profile = Profile(profile=profile_data['profile'])
-        new_administrator.profile = new_profile
-
-    if 'address' in body:
-        address_data = body['address']
-        new_address = Address(province=address_data.get('province'),
-                              canton=address_data.get('canton'),
-                              district=address_data.get('district'))
-        new_administrator.address = new_address
 
     try:
         db.session.add(new_administrator)
@@ -297,7 +294,7 @@ def new_administrator():
 def new_professor():
     required_fields = ["name", "last_name1", "last_name2", "cardID_type",
                        "number_cardID", "birthday", "country", "phone_number", 
-                       "email", "password", "is_active"]
+                       "email", "password", "is_active", "address_id"]
     
     body = request.get_json(silent=True)
     if body is None:
@@ -308,33 +305,13 @@ def new_professor():
     if missing_fields:
         return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
     
+    address = Address.query.get(body['address_id'])
+    if not address:
+        return jsonify({"msg": f"La dirección con id {body['address_id']} no existe."}), 404
+    
     new_professor = Professor()
     for field in required_fields:
         setattr(new_professor, field, body[field])
-
-    if 'paymentprofessor' in body:
-        paymentprofessor_data = body['paymmentprofessor']
-        new_paymentprofessor = PaymentProfessor(pay=paymentprofessor_data.get('pay'),
-                                                SINPE=paymentprofessor_data.get('SINPE'),
-                                                IBAN=paymentprofessor_data.get('IBAN'))
-        new_professor.paymentprofessor = new_paymentprofessor 
-
-    if 'address' in body:
-        address_data = body['address']
-        new_address = Address(province=address_data.get('province'),
-                              canton=address_data.get('canton'),
-                              district=address_data.get('district'))
-        new_professor.address = new_address
-
-    if 'commentprofessor' in body:
-        commentprofessor_data = body['commentprofessor']
-        new_commentprofessor = CommentProfessor(commentprofessor=commentprofessor_data['commentprofessor'])
-        new_professor.commentprofessor = new_commentprofessor
-
-    if 'course' in body:
-        course_data = body['course']
-        new_course = Course(course=course_data['course'])
-        new_professor.course = new_course
 
     try:
         db.session.add(new_professor)
@@ -349,7 +326,7 @@ def new_student():
     required_fields = ["name", "last_name1", "last_name2", "cardID_type",
                        "number_cardID", "birthday", "phone_number", 
                        "responsable", "emergency_contact", "phone_emergency",
-                       "diagnostic", "email", "password", "is_active"]
+                       "diagnostic", "email", "password", "is_active", "address_id"]
     
     body = request.get_json(silent=True)
     if body is None:
@@ -360,44 +337,13 @@ def new_student():
     if missing_fields:
         return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
     
+    address = Address.query.get(body['address_id'])
+    if not address:
+        return jsonify({"msg": f"La dirección con id {body['address_id']} no existe."}), 404
+    
     new_student = Student()
     for field in required_fields:
         setattr(new_student, field, body[field])
-
-    if 'paymentstudent' in body:
-        paymentstudent_data = body['paymmentstudent']
-        new_paymentstudent = PaymentStudent(pay_date=paymentstudent_data.get('pay_date'),
-                                            limit_pay_date=paymentstudent_data.get('limit_pay_date'),
-                                            mount=paymentstudent_data.get('mount'))
-        new_student.paymentstudent = new_paymentstudent
-
-    if 'address' in body:
-        address_data = body['address']
-        new_address = Address(province=address_data.get('province'),
-                              canton=address_data.get('canton'),
-                              district=address_data.get('district'))
-        new_student.address = new_address
-
-    if 'commentstudent' in body:
-        commentstudent_data = body['commentstudent']
-        new_commentstudent = CommentStudent(commentstudent=commentstudent_data['commentstudent'])
-        new_student.commentstudent = new_commentstudent
-
-    if 'course' in body:
-        course_data = body['course']
-        new_course = Course(course=course_data['course'])
-        new_student.course = new_course
-
-    if 'invoice' in body:
-        invoice_data = body['invoice']
-        new_invoice = Invoice(name=invoice_data.get('name'),
-                              last_name1=invoice_data.get('last_name1'),
-                              last_name2=invoice_data.get('last_name2'),
-                              cardID_type=invoice_data.get('cardID_type'),
-                              number_cardID=invoice_data.get('number_cardID'),
-                              phone_number=invoice_data.get('phone_number'),
-                              email=invoice_data.get('email'))
-        new_student.invoice = new_invoice
 
     try:
         db.session.add(new_student)
@@ -434,7 +380,7 @@ def new_profile():
 
 @api.route('/api/paymentprofessor', methods=['POST'])
 def new_paymentprofessor():
-    required_fields = ["pay", "SINPE", "IBAN"]
+    required_fields = ["pay", "SINPE", "IBAN", "professor_id"]
     
     body = request.get_json(silent=True)
     if body is None:
@@ -445,22 +391,13 @@ def new_paymentprofessor():
     if missing_fields:
         return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
     
+    professor = Professor.query.get(body['professor_id'])
+    if not professor:
+        return jsonify({"msg": f"El profesor con id {body['professor_id']} no existe."}), 404
+    
     new_paymentprofessor = PaymentProfessor()
     for field in required_fields:
         setattr(new_paymentprofessor, field, body[field])
-
-    if 'professor' in body:
-        professor_data = body['professor']
-        new_professor = Professor(name=professor_data.get('name'),
-                                  last_name1=professor_data.get('last_name1'),
-                                  last_name2=professor_data.get('last_name2'),
-                                  cardID_type=professor_data.get('cardID_type'),
-                                  number_cardID=professor_data.get('number_cardID'),
-                                  birthday=professor_data.get('birthday'),
-                                  country=professor_data.get('country'),
-                                  phone_number=professor_data.get('phone_number'),
-                                  email=professor_data.get('email'))
-        new_professor.professor = new_professor
 
     try:
         db.session.add(new_paymentprofessor)
@@ -472,7 +409,7 @@ def new_paymentprofessor():
 
 @api.route('/api/paymentstudent', methods=['POST'])
 def new_paymentstudent():
-    required_fields = ["pay_date", "limit_pay_date", "mount"]
+    required_fields = ["pay_date", "limit_pay_date", "mount", "student_id"]
     
     body = request.get_json(silent=True)
     if body is None:
@@ -483,26 +420,13 @@ def new_paymentstudent():
     if missing_fields:
         return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
     
+    student = Student.query.get(body['student_id'])
+    if not student:
+        return jsonify({"msg": f"El estudiante con id {body['student_id']} no existe."}), 404
+    
     new_paymentstudent = PaymentStudent()
     for field in required_fields:
         setattr(new_paymentstudent, field, body[field])
-
-    if 'student' in body:
-        student_data = body['student']
-        new_student = Student(name=student_data.get('name'),
-                              last_name1=student_data.get('last_name1'),
-                              last_name2=student_data.get('last_name2'),
-                              cardID_type=student_data.get('cardID_type'),
-                              number_cardID=student_data.get('number_cardID'),
-                              birthday=student_data.get('birthday'),
-                              country=student_data.get('country'),
-                              phone_number=student_data.get('phone_number'),
-                              responsable=student_data.get('responsable'),
-                              emergency_contact=student_data.get('emergency_contact'),
-                              phone_emergency=student_data.get('phone.emergency'),
-                              diagnostic=student_data.get('diagnostic'),
-                              email=student_data.get('email'))
-        new_student.student = new_event
 
     try:
         db.session.add(new_paymentstudent)
@@ -514,7 +438,7 @@ def new_paymentstudent():
 
 @api.route('/api/commentprofessor', methods=['POST'])
 def new_commentprofessor():
-    required_fields = ["comment_professor"]
+    required_fields = ["comment_professor", "professor_id"]
     
     body = request.get_json(silent=True)
     if body is None:
@@ -525,22 +449,13 @@ def new_commentprofessor():
     if missing_fields:
         return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
     
+    professor = Professor.query.get(body['professor_id'])
+    if not professor:
+        return jsonify({"msg": f"El profesor con id {body['professor_id']} no existe."}), 404
+    
     new_commentprofessor = CommentProfessor()
     for field in required_fields:
         setattr(new_commentprofessor, field, body[field])
-
-    if 'professor' in body:
-        professor_data = body['professor']
-        new_professor = Professor(name=professor_data.get('name'),
-                                  last_name1=professor_data.get('last_name1'),
-                                  last_name2=professor_data.get('last_name2'),
-                                  cardID_type=professor_data.get('cardID_type'),
-                                  number_cardID=professor_data.get('number_cardID'),
-                                  birthday=professor_data.get('birthday'),
-                                  country=professor_data.get('country'),
-                                  phone_number=professor_data.get('phone_number'),
-                                  email=professor_data.get('email'))
-        new_professor.professor = new_professor
 
     try:
         db.session.add(new_commentprofessor)
@@ -563,26 +478,13 @@ def new_commentstudent():
     if missing_fields:
         return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
     
+    student = Student.query.get(body['student_id'])
+    if not student:
+        return jsonify({"msg": f"El estudiante con id {body['student_id']} no existe."}), 404
+    
     new_commentstudent = CommentStudent()
     for field in required_fields:
         setattr(new_commentstudent, field, body[field])
-
-    if 'student' in body:
-        student_data = body['student']
-        new_student = Student(name=student_data.get('name'),
-                              last_name1=student_data.get('last_name1'),
-                              last_name2=student_data.get('last_name2'),
-                              cardID_type=student_data.get('cardID_type'),
-                              number_cardID=student_data.get('number_cardID'),
-                              birthday=student_data.get('birthday'),
-                              country=student_data.get('country'),
-                              phone_number=student_data.get('phone_number'),
-                              responsable=student_data.get('responsable'),
-                              emergency_contact=student_data.get('emergency_contact'),
-                              phone_emergency=student_data.get('phone.emergency'),
-                              diagnostic=student_data.get('diagnostic'),
-                              email=student_data.get('email'))
-        new_student.student = new_event
 
     try:
         db.session.add(new_commentstudent)
@@ -670,7 +572,7 @@ def new_address():
 @api.route('/api/invoice', methods=['POST'])
 def new_invoice():
     required_fields = ["name", "last_name1", "last_name2", "cardID_type",
-                       "number_cardID", "phone_number", "email"]
+                       "number_cardID", "phone_number", "email", "student_id"]
     
     body = request.get_json(silent=True)
     if body is None:
@@ -681,26 +583,13 @@ def new_invoice():
     if missing_fields:
         return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
     
+    student = Student.query.get(body['student_id'])
+    if not student:
+        return jsonify({"msg": f"El estudiante con id {body['student_id']} no existe."}), 404
+    
     new_invoice = Invoice()
     for field in required_fields:
         setattr(new_invoice, field, body[field])
-
-    if 'student' in body:
-        student_data = body['student']
-        new_student = Student(name=student_data.get('name'),
-                              last_name1=student_data.get('last_name1'),
-                              last_name2=student_data.get('last_name2'),
-                              cardID_type=student_data.get('cardID_type'),
-                              number_cardID=student_data.get('number_cardID'),
-                              birthday=student_data.get('birthday'),
-                              country=student_data.get('country'),
-                              phone_number=student_data.get('phone_number'),
-                              responsable=student_data.get('responsable'),
-                              emergency_contact=student_data.get('emergency_contact'),
-                              phone_emergency=student_data.get('phone.emergency'),
-                              diagnostic=student_data.get('diagnostic'),
-                              email=student_data.get('email'))
-        new_student.student = new_event 
 
     try:
         db.session.add(new_invoice)
