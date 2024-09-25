@@ -467,7 +467,7 @@ def new_commentprofessor():
 
 @api.route('/api/commentstudent', methods=['POST'])
 def new_commentstudent():
-    required_fields = ["comment_student"]
+    required_fields = ["comment_student", "student_id"]
     
     body = request.get_json(silent=True)
     if body is None:
@@ -656,6 +656,380 @@ def new_course():
 
     try:
         db.session.add(new_course)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+# Metodos PUT de las tablas
+@api.route('/api/administrator/<int:id>', methods=['PUT'])
+def update_administrator(id):
+    body = request.get_json(silent=True)
+
+    required_fields = ["name", "last_name1", "last_name2", "cardID_type",
+                       "number_cardID", "birthday", "phone_number", 
+                       "email", "password", "profile_id",
+                       "address_id"]
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if body is None or missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    update_administrator = Administrator.query.get(id)
+    if update_administrator is None:
+        return jsonify({"msg": "Administrador no encontrado"}), 400
+    
+    for field in required_fields:
+        setattr(update_administrator, field, body[field])
+
+    try:
+        db.session.add(update_administrator)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/professor/<int:id>', methods=['PUT'])
+def update_professor(id):
+    body = request.get_json(silent=True)
+
+    required_fields = ["name", "last_name1", "last_name2", "cardID_type",
+                       "number_cardID", "birthday", "country", "phone_number", 
+                       "email", "password", "address_id"]
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if body is None or missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    update_professor = Professor.query.get(id)
+    if update_professor is None:
+        return jsonify({"msg": "Profesor no encontrado"}), 400
+    
+    for field in required_fields:
+        setattr(update_professor, field, body[field])
+
+    try:
+        db.session.add(update_professor)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/student/<int:id>', methods=['PUT'])
+def update_student(id):
+    body = request.get_json(silent=True)
+
+    required_fields = ["name", "last_name1", "last_name2", "cardID_type",
+                       "number_cardID", "birthday", "phone_number", 
+                       "responsable", "emergency_contact", "phone_emergency",
+                       "diagnostic", "email", "password", "address_id"]
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if body is None or missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    update_student = Student.query.get(id)
+    if update_student is None:
+        return jsonify({"msg": "Estudiante no encontrado"}), 400
+    
+    for field in required_fields:
+        setattr(update_student, field, body[field])
+
+    try:
+        db.session.add(update_student)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/profile/<int:id>', methods=['PUT'])
+def update_profile():
+    body = request.get_json(silent=True)
+
+    required_fields = ["profile"]
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if body is None or missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    update_profile = Profile.query.get(id)
+    if update_profile is None:
+        return jsonify({"msg": "Perfil no encontrado"}), 400
+    
+    for field in required_fields:
+        setattr(update_profile, field, body[field])
+
+    try:
+        db.session.add(update_profile)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/paymentprofessor/<int:id>', methods=['PUT'])
+def update_paymentprofessor():
+    body = request.get_json(silent=True)
+
+    required_fields = ["pay", "SINPE", "IBAN", "professor_id"]
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if body is None or missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    update_paymentprofessor = PaymentProfessor.query.get(id)
+    if update_paymentprofessor is None:
+        return jsonify({"msg": "Metodo de pago no encontrado"}), 400
+    
+    for field in required_fields:
+        setattr(update_paymentprofessor, field, body[field])
+
+    try:
+        db.session.add(update_paymentprofessor)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/paymentstudent/<int:id>', methods=['PUT'])
+def update_paymentstudent():
+    body = request.get_json(silent=True)
+
+    required_fields = ["pay_date", "limit_pay_date", "mount", "student_id"]
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if body is None or missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    update_paymentstudent = PaymentStudent.query.get(id)
+    if update_paymentstudent is None:
+        return jsonify({"msg": "Metodo de pago no encontrado"}), 400
+    
+    for field in required_fields:
+        setattr(update_paymentstudent, field, body[field])
+
+    try:
+        db.session.add(update_paymentstudent)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/commentprofessor/<int:id>', methods=['PUT'])
+def update_commentprofessor():
+    body = request.get_json(silent=True)
+
+    required_fields = ["comment_professor", "professor_id"]
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if body is None or missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    update_commentprofessor = CommentProfessor.query.get(id)
+    if update_commentprofessor is None:
+        return jsonify({"msg": "Comentario no encontrado"}), 400
+    
+    for field in required_fields:
+        setattr(update_commentprofessor, field, body[field])
+
+    try:
+        db.session.add(update_commentprofessor)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/commentstudent/<int:id>', methods=['PUT'])
+def update_commentstudent():
+    body = request.get_json(silent=True)
+
+    required_fields = ["comment_student", "student_id"]
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if body is None or missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    update_commentstudent = CommentStudent.query.get(id)
+    if update_commentstudent is None:
+        return jsonify({"msg": "Comentario no encontrado"}), 400
+    
+    for field in required_fields:
+        setattr(update_commentstudent, field, body[field])
+
+    try:
+        db.session.add(update_commentstudent)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/post/<int:id>', methods=['PUT'])
+def update_post():
+    body = request.get_json(silent=True)
+
+    required_fields = ["title", "author", "origin_date", "publish_date", "theme", "post"]
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if body is None or missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    update_post = Post.query.get(id)
+    if update_post is None:
+        return jsonify({"msg": "Post no encontrado"}), 400
+    
+    for field in required_fields:
+        setattr(update_post, field, body[field])
+
+    try:
+        db.session.add(update_post)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/event/<int:id>', methods=['PUT'])
+def update_event():
+    body = request.get_json(silent=True)
+
+    required_fields = ["event_date", "place", "event"]
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if body is None or missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    update_event = Event.query.get(id)
+    if update_event is None:
+        return jsonify({"msg": "Evento no encontrado"}), 400
+    
+    for field in required_fields:
+        setattr(update_event, field, body[field])
+
+    try:
+        db.session.add(update_event)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/address/<int:id>', methods=['PUT'])
+def update_address():
+    body = request.get_json(silent=True)
+
+    required_fields = ["province", "canton", "district"]
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if body is None or missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    update_address = Address.query.get(id)
+    if update_address is None:
+        return jsonify({"msg": "Direccion no encontrado"}), 400
+    
+    for field in required_fields:
+        setattr(update_address, field, body[field])
+
+    try:
+        db.session.add(update_address)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/invoice/<int:id>', methods=['PUT'])
+def update_invoice():
+    body = request.get_json(silent=True)
+
+    required_fields = ["name", "last_name1", "last_name2", "cardID_type",
+                       "number_cardID", "phone_number", "email", "student_id"]
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if body is None or missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    update_invoice = Invoice.query.get(id)
+    if update_invoice is None:
+        return jsonify({"msg": "Datos para factura electronica no encontrados"}), 400
+    
+    for field in required_fields:
+        setattr(update_invoice, field, body[field])
+
+    try:
+        db.session.add(update_invoice)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/instrument/<int:id>', methods=['PUT'])
+def update_instrument():
+    body = request.get_json(silent=True)
+
+    required_fields = ["instrument"]
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if body is None or missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    update_instrument = Instrument.query.get(id)
+    if update_instrument is None:
+        return jsonify({"msg": "Instrumento no encontrado"}), 400
+    
+    for field in required_fields:
+        setattr(update_instrument, field, body[field])
+
+    try:
+        db.session.add(update_instrument)
+        db.session.commit()
+    except Exception as error:
+        return jsonify({"msg": error.args[0]}), 500
+    
+    return jsonify({"msg": "OK"}), 200
+
+@api.route('/api/course/<int:id>', methods=['PUT'])
+def update_course():
+    body = request.get_json(silent=True)
+
+    required_fields = ["instrument_id", "student_id", "professor_id", "modality"]
+    
+    missing_fields = [field for field in required_fields if field not in body]
+
+    if body is None or missing_fields:
+        return jsonify({"msg": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    update_course = Course.query.get(id)
+    if update_course is None:
+        return jsonify({"msg": "Curso no encontrado"}), 400
+    
+    for field in required_fields:
+        setattr(update_course, field, body[field])
+
+    try:
+        db.session.add(update_course)
         db.session.commit()
     except Exception as error:
         return jsonify({"msg": error.args[0]}), 500
